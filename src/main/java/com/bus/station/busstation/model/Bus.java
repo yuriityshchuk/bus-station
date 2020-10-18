@@ -1,6 +1,7 @@
 package com.bus.station.busstation.model;
 
-import com.bus.station.busstation.model.utility.BusClass;
+import com.bus.station.busstation.model.utility.enums.BusClass;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -21,7 +22,6 @@ public class Bus {
     private int id;
 
     @NotEmpty
-
     private String number;
 
     @NotEmpty
@@ -53,5 +53,6 @@ public class Bus {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "bus_id")
-    private List<Ticket> ticketList;
+    @JsonIgnore
+    private List<Route> routeList;
 }
