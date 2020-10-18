@@ -2,6 +2,7 @@ package com.bus.station.busstation.service;
 
 import com.bus.station.busstation.exception.DataNotFoundException;
 import com.bus.station.busstation.model.Route;
+import com.bus.station.busstation.model.dto.RouteDTO;
 import com.bus.station.busstation.repository.RouteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,7 +13,7 @@ public class RouteService {
     private final RouteRepository routeRepository;
 
     @Autowired
-    public RouteService(RouteRepository routeRepository) { 
+    public RouteService(RouteRepository routeRepository) {
         this.routeRepository = routeRepository;
     }
 
@@ -39,5 +40,13 @@ public class RouteService {
 
     public Iterable<Route> getRoutesByDepartureIdAndArrivalId(int departureId, int arrivalId) {
         return routeRepository.getAllByDepartureIdAndArrivalId(departureId, arrivalId);
+    }
+
+    public Iterable<Route> getAllByDateArrivalDeparturePlacesAndPassengers(RouteDTO routeDTO) {
+        return routeRepository.
+                getAllByDateArrivalDeparturePlacesAndPassengers(routeDTO.getArrivalPlaceId(),
+                        routeDTO.getDeparturePlaceId(),
+                        routeDTO.getDepartureDate(),
+                        routeDTO.getNumberOfPassengers());
     }
 }
