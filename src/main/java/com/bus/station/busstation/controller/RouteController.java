@@ -1,6 +1,7 @@
 package com.bus.station.busstation.controller;
 
 import com.bus.station.busstation.model.Route;
+import com.bus.station.busstation.model.dto.RouteDTO;
 import com.bus.station.busstation.service.RouteService;
 import com.bus.station.busstation.service.TicketService;
 import org.springframework.http.HttpStatus;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/routes")
+@CrossOrigin("*")
 public class RouteController {
 
     private final RouteService routeService;
@@ -20,7 +22,7 @@ public class RouteController {
         this.ticketService = ticketService;
     }
 
-    @GetMapping("/getAll")
+    @GetMapping("/all")
     public ResponseEntity<?> getAll() {
         return ResponseEntity.status(HttpStatus.OK).body(routeService.getAll());
     }
@@ -28,6 +30,11 @@ public class RouteController {
     @GetMapping("/{routeId}/bought-tickets")
     public ResponseEntity<?> getAllBoughtTicketsForRoute(@PathVariable("routeId") int routeId) {
         return ResponseEntity.status(HttpStatus.OK).body(ticketService.getAllTicketsByRouteId(routeId));
+    }
+
+    @GetMapping("/{routeId}")
+    public ResponseEntity<?> getById(@PathVariable("routeId") int routeId) {
+        return ResponseEntity.status(HttpStatus.OK).body(routeService.getById(routeId));
     }
 
     @GetMapping("/{departureId}/{arrivalId}")
@@ -51,5 +58,13 @@ public class RouteController {
     @PostMapping("/save")
     public ResponseEntity<?> saveRoute(@RequestBody Route route) {
         return ResponseEntity.status(HttpStatus.CREATED).body(routeService.save(route));
+    }
+
+    @PostMapping("/search")
+    public ResponseEntity<?> getRouteByDatePlacesAndNumberOfPassengers(@RequestBody RouteDTO routeDTO) {
+
+
+        return ResponseEntity.status(HttpStatus.OK).body(routeService.
+                getAllByDateArrivalDeparturePlacesAndPassengers(routeDTO));
     }
 }

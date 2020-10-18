@@ -1,7 +1,6 @@
 package com.bus.station.busstation.controller;
 
 import com.bus.station.busstation.model.Bus;
-import com.bus.station.busstation.model.Route;
 import com.bus.station.busstation.service.BusService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/buses")
+@CrossOrigin("*")
+
 public class BusController {
 
     private final BusService busService;
