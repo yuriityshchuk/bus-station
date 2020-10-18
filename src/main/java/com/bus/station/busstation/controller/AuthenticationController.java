@@ -11,14 +11,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
 @RestController
+@CrossOrigin("*")
 public class AuthenticationController {
 
     @Value("${jwt.http.request.header}")
@@ -32,13 +32,13 @@ public class AuthenticationController {
 
     @Autowired
     public AuthenticationController(AuthenticationManager authenticationManager, JwtTokenUtil jwtTokenUtil,
-                                 UserDetailsServiceImpl userDetailsService) {
+                                    UserDetailsServiceImpl userDetailsService) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenUtil = jwtTokenUtil;
         this.userDetailsService = userDetailsService;
     }
 
-    @PostMapping(value = "${jwt.get.token.uri}")
+    @PostMapping(value = "${jwt.get.token.uri}", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtTokenRequest authenticationRequest)
             throws CustomAuthenticationException {
 
@@ -52,7 +52,9 @@ public class AuthenticationController {
         JwtTokenResponse jwtTokenResponse = new JwtTokenResponse();
 
         jwtTokenResponse.setToken(token);
-        return ResponseEntity.ok().body(jwtTokenResponse.getToken());
+        jwtTokenResponse.setRoles(userDetails.getUser().getRoles());
+
+        return ResponseEntity.ok().body(jwtTokenResponse);
     }
 
     @GetMapping(value = "${jwt.refresh.token.uri}")

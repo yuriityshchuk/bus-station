@@ -1,9 +1,9 @@
 package com.bus.station.busstation.model;
 
 import com.bus.station.busstation.model.utility.BasePerson;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.hibernate.validator.constraints.UniqueElements;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -24,5 +24,6 @@ public class Driver extends BasePerson {
             joinColumns = {@JoinColumn(name = "driver_id")},
             inverseJoinColumns = {@JoinColumn(name = "bus_id")})
     @NotNull
+    @JsonIgnore
     private List<Bus> busList;
 }

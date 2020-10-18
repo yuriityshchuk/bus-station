@@ -6,11 +6,16 @@ import com.bus.station.busstation.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/users")
+@CrossOrigin("*")
 public class UserController {
 
     private final UserService userService;
@@ -29,7 +34,7 @@ public class UserController {
     }
 
 
-    @GetMapping(value = "/getAll")
+    @GetMapping(value = "/all")
     public ResponseEntity<Iterable<User>> getAll() {
         return ResponseEntity.status(HttpStatus.OK).body(userService.getAll());
     }
@@ -37,9 +42,7 @@ public class UserController {
 
     @PostMapping(value = "/register")
     public ResponseEntity<User> saveUser(@RequestBody User user) {
-
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        return ResponseEntity.status(HttpStatus.CREATED).body(userService.save(user));
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.saveWithCheck(user));
     }
 
 
@@ -68,5 +71,42 @@ public class UserController {
 
         return ResponseEntity.status(HttpStatus.OK).body(ticketService.getAllTicketsByUserId(userId));
     }
+
+    @GetMapping("/logged-user")
+    public ResponseEntity<?> getLoggedUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        String username = authentication.getName();
+        return ResponseEntity.status(HttpStatus.OK).body(userService.findByUsername(username));
+    }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<?> postChangePassword(@RequestBody Map<String, String> jsonBody) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        String oldPassword = jsonBody.get("oldPassword");
+        String newPassword = jsonBody.get("newPassword");
+
+            return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(userService.changePassword(username, oldPassword, newPassword));
+    }
+
+    @PostMapping("/change-email")
+    public ResponseEntity<?> postChangeEmail(@RequestBody Map<String, String> jsonBody) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        String newEmail = jsonBody.get("newEmail");
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(userService.changeEmail(username, newEmail));
+    }
+
+    @PostMapping("/block/{userId}")
+    public ResponseEntity<?> postBlockUser(@PathVariable("userId") int userId) {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.blockAccount(userId));
+    }
+
 }
 

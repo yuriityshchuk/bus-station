@@ -1,6 +1,5 @@
 package com.bus.station.busstation.security.details;
 
-import com.bus.station.busstation.repository.UserRepository;
 import com.bus.station.busstation.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

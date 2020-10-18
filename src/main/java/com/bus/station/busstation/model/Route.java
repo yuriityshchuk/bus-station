@@ -1,10 +1,10 @@
 package com.bus.station.busstation.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 
 @Entity
@@ -17,23 +17,26 @@ public class Route {
 
     @ManyToOne
     @JoinColumn(name = "arrival_place_id")
-    @NotNull
     private City arrivalPlace;
 
     @ManyToOne
     @JoinColumn(name = "departure_place_id")
-    @NotNull
     private City departurePlace;
 
-    @NotNull
     @Column(name = "arrival_date")
     private Date arrivalDate;
 
-    @NotNull
     @Column(name = "departure_date")
     private Date departureDate;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @Column(name = "number_of_passengers")
+    private int numberOfPassengers;
+
+    @OneToMany(cascade = CascadeType.MERGE, orphanRemoval = true)
     @JoinColumn(name = "route_id")
+    @JsonIgnore
     private List<Ticket> ticketList;
+
+    @ManyToOne(cascade = CascadeType.MERGE)
+    private Bus bus;
 }

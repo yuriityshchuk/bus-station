@@ -1,6 +1,6 @@
 package com.bus.station.busstation.model;
 
-import com.bus.station.busstation.model.utility.TicketStatus;
+import com.bus.station.busstation.model.utility.enums.TicketStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
@@ -16,26 +16,22 @@ public class Ticket {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column(name = "client_email")
+    private String clientEmail;
+
     @NotNull
     @Column(name = "buy_time")
     private Date buyTime;
 
-    @ManyToOne
-    @NotNull
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JsonIgnore
     private User user;
 
     @Enumerated(EnumType.STRING)
-    @NotNull
     private TicketStatus status;
 
-    @ManyToOne
-    @NotNull
-    @JsonIgnore
-    private Bus bus;
-
-    @ManyToOne
-    @NotNull
-    @JsonIgnore
+    @ManyToOne(cascade = CascadeType.MERGE)
     private Route route;
+
+
 }
