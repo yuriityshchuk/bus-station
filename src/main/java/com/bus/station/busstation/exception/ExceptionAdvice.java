@@ -20,6 +20,11 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
         return buildResponseEntity(new ErrorModel(HttpStatus.NOT_FOUND, e));
     }
 
+    @ExceptionHandler({UserException.class})
+    public ResponseEntity<?> handleUserException(UserException e) {
+        return buildResponseEntity(new ErrorModel(HttpStatus.FORBIDDEN, e));
+    }
+
     private ResponseEntity<?> buildResponseEntity(ErrorModel errorModel) {
         return new ResponseEntity<>(errorModel, errorModel.getStatus());
     }
