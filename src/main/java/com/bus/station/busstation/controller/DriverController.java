@@ -1,8 +1,6 @@
 package com.bus.station.busstation.controller;
 
-import com.bus.station.busstation.model.Bus;
 import com.bus.station.busstation.model.Driver;
-import com.bus.station.busstation.repository.DriverRepository;
 import com.bus.station.busstation.service.DriverService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/drivers")
+@CrossOrigin("*")
+
 public class DriverController {
 
     public final DriverService driverService;
@@ -40,8 +40,8 @@ public class DriverController {
         return ResponseEntity.status(HttpStatus.OK).body(driverService.getAll());
     }
 
-    @GetMapping("/driver-licence")
-    public ResponseEntity<?> getDriverByDriverLicence(@RequestParam("driver-licence") String driverLicence) {
+    @GetMapping("/driver-license")
+    public ResponseEntity<?> getDriverByDriverLicence(@RequestParam("driver-license") String driverLicence) {
         return ResponseEntity.status(HttpStatus.OK).body(driverService.getByDriverLicense(driverLicence));
     }
 }
