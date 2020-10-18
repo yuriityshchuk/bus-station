@@ -23,22 +23,22 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    UserDetailsServiceImpl userDetailsService;
+    private final UserDetailsServiceImpl userDetailsService;
 
-    JwtUnAuthorizedResponseAuthenticationEntryPoint jwtUnAuthorizedResponseAuthenticationEntryPoint;
+    private final JwtUnAuthorizedResponseAuthenticationEntryPoint entryPoint;
 
-    JwtTokenAuthorizationOncePerRequestFilter jwtTokenAuthorizationOncePerRequestFilter;
+    private final JwtTokenAuthorizationOncePerRequestFilter requestFilter;
 
     @Value("${jwt.get.token.uri}")
     private String authenticationPath;
 
     public SecurityConfig(UserDetailsServiceImpl userDetailsService,
-                             JwtTokenAuthorizationOncePerRequestFilter jwtTokenAuthorizationOncePerRequestFilter,
+                             JwtTokenAuthorizationOncePerRequestFilter requestFilter,
                              JwtUnAuthorizedResponseAuthenticationEntryPoint
-                                     jwtUnAuthorizedResponseAuthenticationEntryPoint) {
+                                  entryPoint) {
         this.userDetailsService = userDetailsService;
-        this.jwtTokenAuthorizationOncePerRequestFilter = jwtTokenAuthorizationOncePerRequestFilter;
-        this.jwtUnAuthorizedResponseAuthenticationEntryPoint = jwtUnAuthorizedResponseAuthenticationEntryPoint;
+        this.requestFilter = requestFilter;
+        this.entryPoint = entryPoint;
     }
 
     @Bean
@@ -58,25 +58,27 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
 
+
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .csrf().disable()
-                .exceptionHandling().authenticationEntryPoint(jwtUnAuthorizedResponseAuthenticationEntryPoint).and()
+                .cors()
+                .and()
+                .exceptionHandling().authenticationEntryPoint(entryPoint).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
-                .anyRequest().authenticated();
-
-        httpSecurity
-                .addFilterBefore(jwtTokenAuthorizationOncePerRequestFilter, UsernamePasswordAuthenticationFilter.class);
-
-        httpSecurity
+                .anyRequest()
+                .authenticated()
+                .and()
+                .addFilterBefore(requestFilter, UsernamePasswordAuthenticationFilter.class)
                 .headers()
-                .frameOptions().sameOrigin()
-                .cacheControl();
+                .cacheControl()
+                .and()
+                .frameOptions();
 
-        httpSecurity.cors().disable();
     }
+
 
     @Override
     public void configure(WebSecurity webSecurity) {
@@ -95,14 +97,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 )
                 .and()
                 .ignoring()
-                .antMatchers("/v2/api-docs",
+                .antMatchers(
+
                         "/configuration/ui",
-                        "/swagger-resources/**",
                         "/configuration/security",
-                        "/swagger-ui.html",
                         "/webjars/**",
-                        "/user/register",
+                        "/users/register",
                         "/h2-console/**/**");
     }
+
+
 
 }
