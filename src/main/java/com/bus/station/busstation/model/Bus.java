@@ -47,10 +47,6 @@ public class Bus {
     @Column(name = "bus_class")
     private BusClass busClass;
 
-    @ManyToMany(mappedBy = "busList")
-    @NotNull
-    private Set<Driver> driverSet;
-
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "bus_id")
     @JsonIgnore

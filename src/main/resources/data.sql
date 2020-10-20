@@ -13,17 +13,11 @@ VALUES (1, 1),
        (2, 2);
 
 
-INSERT INTO driver(id, first_name, last_name, gender, driver_license)
-VALUES (1, 'Danil', 'Grymovsky', 'MALE', 'VKS21DAAS'),
-       (2, 'Artur', 'Mikhayliv', 'MALE', 'VA221GF3');
-
 INSERT INTO bus(id, number, name, max_number_of_passengers, create_date, VIN, bus_class, currently_used)
 VALUES (1, 'VK1228AC', 'Mercedes', 50, sysdate, 'VSADSA3421321', 1, 1),
        (2, 'AA2141AC', 'TATA', 45, sysdate, 'VADASD31421', 2, 1);
 
-INSERT INTO driver_bus(driver_id, bus_id)
-VALUES (1, 2),
-       (2, 1);
+
 
 INSERT INTO city(id, name, region)
 VALUES (1, 'Rivne', 'Rivne'),
